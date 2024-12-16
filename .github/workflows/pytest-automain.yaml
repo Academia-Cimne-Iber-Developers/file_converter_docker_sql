@@ -1,0 +1,56 @@
+name: Pytest Automation
+
+# Los eventos que desencadenan el workflow son push y pull_request en la rama main
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# Se otorgan permisos de lectura al workflow
+permissions:
+  contents: read
+
+jobs:
+  # job_id:
+  python-tests:
+    runs-on: ${{ matrix.os }}
+    
+    # Matriz de estrategia para probar múltiples versiones de Python en diferentes SO
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+    # Esta acción clona el repositorio en la máquina virtual
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+    # Esta acción instala una versión específica de Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies (Linux)
+    # La pipe (|) permite escribir múltiples comandos en un solo paso
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      shell: bash
+      # runner es una variable de entorno que contiene información sobre la máquina virtual
+      if: runner.os != 'Windows'
+
+    - name: Install dependencies (Windows)
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov
+        if (Test-Path requirements.txt) { pip install -r requirements.txt }
+      shell: pwsh
+      if: runner.os == 'Windows'
+    
+    - name: Test with pytest
+      run: |
+        # Ejecutar las pruebas
+        pytest

@@ -1,0 +1,15 @@
+# Python cache
+__pycache__/
+*.pyc
+.pytest_cache/
+# Virtualenv
+venv*/
+# Environment variables
+.env
+# Generated coverage reports
+.coverage*
+coverage*
+htmlcov/
+
+*.csv
+*.json
