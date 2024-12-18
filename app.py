@@ -28,6 +28,7 @@ def create_app(config: dict = None) -> Flask:
     database_service = DatabaseService(
         host=app.config["DB_HOST"],
         user=app.config["DB_USER"],
+        port=app.config["DB_PORT"],
         password=app.config["DB_PASSWORD"],
         database=app.config["DB_NAME"],
     )
