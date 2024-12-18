@@ -1,6 +1,7 @@
 services:
     converter_db:
         image: mysql:8.0
+        container_name: file_converter_db
         restart: always
         ports:
             - "32000:3306"
@@ -8,8 +9,6 @@ services:
             MYSQL_ROOT_PASSWORD: root
             DB_MYSQL_HOST: converter_db
             MYSQL_DATABASE: conversions
-            MYSQL_USER: root
-            MYSQL_PASSWORD: converter
         volumes:
             - mysql_data:/var/lib/mysql
             - ./init-db:/docker-entrypoint-initdb.d
@@ -23,6 +22,7 @@ services:
             - DB_HOST=converter_db
             - DB_PASSWORD=root
             - DB_NAME=conversions
+        # Espera a que el servicio converter_db esté listo
         depends_on:
             - converter_db
         ports:
