@@ -4,12 +4,13 @@ from typing import List, Optional, Dict
 
 
 class DatabaseService:
-    def __init__(self, host: str, user: str, password: str, database: str):
+    def __init__(self, host: str, user: str, password: str, database: str, port: str):
         self.config = {
             "host": host,
             "user": user,
             "password": password,
             "database": database,
+            "port": port,
         }
         self._create_database()
         self._create_table()
@@ -22,15 +23,14 @@ class DatabaseService:
             host=self.config["host"],
             user=self.config["user"],
             password=self.config["password"],
+            port=self.config["port"],
         )
 
         cursor = conn.cursor()
 
         try:
             cursor.execute(
-                "CREATE DATABASE IF NOT EXISTS {}".format(
-                    self.config["database"]
-                )
+                "CREATE DATABASE IF NOT EXISTS {}".format(self.config["database"])
             )
             conn.commit()
         finally:
