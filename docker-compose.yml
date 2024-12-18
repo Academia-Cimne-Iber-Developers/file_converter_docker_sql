@@ -8,8 +8,6 @@ services:
             MYSQL_ROOT_PASSWORD: root
             DB_MYSQL_HOST: converter_db
             MYSQL_DATABASE: conversions
-            MYSQL_USER: root
-            MYSQL_PASSWORD: converter
         volumes:
             - mysql_data:/var/lib/mysql
             - ./init-db:/docker-entrypoint-initdb.d
