@@ -7,60 +7,15 @@ class DatabaseService:
     def __init__(self, host: str, user: str, password: str, database: str, port: str):
         self.config = {
             "host": host,
+            "port": port,
             "user": user,
             "password": password,
             "database": database,
             "port": port,
         }
-        self._create_database()
-        self._create_table()
 
     def _get_connection(self):
         return mysql.connector.connect(**self.config)
-
-    def _create_database(self):
-        conn = mysql.connector.connect(
-            host=self.config["host"],
-            user=self.config["user"],
-            password=self.config["password"],
-            port=self.config["port"],
-        )
-
-        cursor = conn.cursor()
-
-        try:
-            cursor.execute(
-                "CREATE DATABASE IF NOT EXISTS {}".format(self.config["database"])
-            )
-            conn.commit()
-        finally:
-            cursor.close()
-            conn.close()
-
-    def _create_table(self):
-        conn = self._get_connection()
-        cursor = conn.cursor()
-
-        try:
-            cursor.execute(
-                """
-                CREATE TABLE IF NOT EXISTS conversion_logs (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    ip VARCHAR(50) NOT NULL,
-                    source_format VARCHAR(10) NOT NULL,
-                    target_format VARCHAR(10) NOT NULL,
-                    file_size FLOAT NOT NULL,
-                    processing_time FLOAT NOT NULL,
-                    status VARCHAR(20) NOT NULL,
-                    error_message VARCHAR(500),
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
-            conn.commit()
-        finally:
-            cursor.close()
-            conn.close()
 
     def log_conversion(
         self,

@@ -31,6 +31,7 @@ def create_app(config: dict = None) -> Flask:
         port=app.config["DB_PORT"],
         password=app.config["DB_PASSWORD"],
         database=app.config["DB_NAME"],
+        port=app.config["DB_PORT"],
     )
     converter_service = ConverterService(
         validator_service, file_service, transformation_service
@@ -70,7 +71,9 @@ def create_app(config: dict = None) -> Flask:
                 error_message=None,
             )
 
-            return jsonify({"data": result, "message": "Conversion successful"})
+            return jsonify(
+                {"data": result, "message": "Conversion successful"}
+            )
         except ValueError as e:
             processing_time = time.time() - start_time
             database_service.log_conversion(
@@ -151,7 +154,9 @@ def create_app(config: dict = None) -> Flask:
                     {
                         **log,
                         "created_at": (
-                            log["created_at"].isoformat() if log["created_at"] else None
+                            log["created_at"].isoformat()
+                            if log["created_at"]
+                            else None
                         ),
                     }
                     for log in history
