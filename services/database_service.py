@@ -11,10 +11,31 @@ class DatabaseService:
             "password": password,
             "database": database,
         }
+        self._create_database()
         self._create_table()
 
     def _get_connection(self):
         return mysql.connector.connect(**self.config)
+
+    def _create_database(self):
+        conn = mysql.connector.connect(
+            host=self.config["host"],
+            user=self.config["user"],
+            password=self.config["password"],
+        )
+
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute(
+                "CREATE DATABASE IF NOT EXISTS {}".format(
+                    self.config["database"]
+                )
+            )
+            conn.commit()
+        finally:
+            cursor.close()
+            conn.close()
 
     def _create_table(self):
         conn = self._get_connection()
